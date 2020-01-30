@@ -8,6 +8,7 @@ from cwmodel import cwnet
 from vggmodel import *
 from resnetmodel import wide_resnet
 from detect_v2 import *
+from tqdm import tqdm
 
 def load_GPUS(model, model_path, **kwargs):
     state_dict = torch.load(model_path, **kwargs)

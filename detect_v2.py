@@ -5,6 +5,7 @@ import torch.optim as optim
 import numpy as np
 import torchvision
 from utils_v2 import Noisy,random_label
+from tqdm import tqdm
 
 noisy = Noisy.apply
 
@@ -13,7 +14,7 @@ noisy = Noisy.apply
 def l1_detection(model, 
                  img,
                  n_radius):
-    return torch.norm(F.softmax(model(img)) - F.softmax(model(noisy(img, n_radius))), 1).item()
+    return torch.norm(F.softmax(model(img), dim=1) - F.softmax(model(noisy(img, n_radius), dim=1)), 1).item()
 
 """ Return the number of steps to cross boundary using targeted attack on [img]. Iteration stops at [cap] steps """
 def targeted_detection(model, 
@@ -99,7 +100,7 @@ def l1_vals(model,
     vals = np.zeros(0)
     model.eval()
     if attack == "Clean":
-        for img, name in dataloader:
+        for img, name in tqdm(dataloader, desc="val1 for Clean"):
             #cause the batch size is one
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             view_data_label = int(name[0].split('_')[-1][1])
@@ -110,7 +111,7 @@ def l1_vals(model,
             vals = np.concatenate((vals, [val]))
     else:
         count = len(dataloader.dataset)
-        for img, name in dataloader:
+        for img, name in tqdm(dataloader, desc="val1 for "+attack):
             #cause the batch size is one
             real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
@@ -140,7 +141,7 @@ def targeted_vals(model,
     vals = np.zeros(0)
     model.eval()
     if attack == "Clean":
-        for img, name in dataloader:
+        for img, name in tqdm(dataloader, desc="val2 for Clean")::
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             #cause the batch size is one
             view_data_label = int(name[0].split('_')[-1][1])
@@ -151,7 +152,7 @@ def targeted_vals(model,
             vals = np.concatenate((vals, [val]))
     else:
         count = len(dataloader.dataset)
-        for img, name in dataloader:
+        for img, name in tqdm(dataloader, desc="val2 for "+attack)::
             #cause the batch size is one
             real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
@@ -182,7 +183,7 @@ def untargeted_vals(model,
     vals = np.zeros(0)
     model.eval()
     if attack == "Clean":
-        for img, name in dataloader:
+        for img, name in tqdm(dataloader, desc="val3 for Clean")::
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             #cause the batch size is one
             view_data_label = int(name[0].split('_')[-1][1])
@@ -193,7 +194,7 @@ def untargeted_vals(model,
             vals = np.concatenate((vals, [val]))
     else:
         count = len(dataloader.dataset)
-        for img, name in dataloader:
+        for img, name in tqdm(dataloader, desc="val3 for "+attack)::
             #cause the batch size is one
             real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
