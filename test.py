@@ -72,7 +72,9 @@ if __name__ == "__main__":
     parser.add_argument("--atk", choices=['black', 'white'], default="black", help="which type of attack you want to test, black or white")
     parser.add_argument("--dataset", choices=['fmnist', 'cifar10'], default="cifar10", help= "[cifar, fmnist] what kind of dataset you want to test")
     parser.add_argument("--data_dir", type=str, default="../wyf/SubGRED/adversarial_data/", help="datset path")
+    # parser.add_argument("--data_dir", type=str, default="../fmnist/adversarial_data/", help="datset path")
     parser.add_argument("--model_dir", type=str, default='../wyf/SubGRED/classifier_pth/', help="path to the model you want to test")
+    # parser.add_argument("--model_dir", type=str, default='../fmnist/classifier_pth/', help="path to the model you want to test")
     parser.add_argument("--arch", choices=model_names, default='vgg11bn', help="the model arch from which the adversarial examples are generated")
     # parser.add_argument('atk', choices=attacks, required=True, help="the attack you want to test against")
     args = parser.parse_args()
@@ -129,7 +131,7 @@ if __name__ == "__main__":
     
     # save target 1,2,3 and fpr list (all np array)
     np.save(exp_name+'clean_val1', target_1)
-    np.saveexp_name+('clean_val2', target_2)
+    np.save(exp_name+'clean_val2', target_2)
     np.save(exp_name+'clean_val3', target_3)
     np.save(exp_name+'fpr', fpr)
 

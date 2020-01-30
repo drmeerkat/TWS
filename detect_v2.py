@@ -24,12 +24,13 @@ def targeted_detection(model,
                        t_radius, 
                        cap=200,
                        margin=20,
-                       use_margin=False):
+                       use_margin=False,
+                       dataset='cifar'):
     model.eval()
     x_var = torch.autograd.Variable(img.clone().cuda(), requires_grad=True)
     true_label = model(x_var.clone()).data.max(1, keepdim=True)[1][0].item()
     optimizer_s = optim.SGD([x_var], lr=lr)
-    target_l = torch.LongTensor([random_label(true_label, dataset=dataset)]).cuda()
+    target_l = torch.LongTensor([random_label(true_label, dataset=dataset)]).cuda()  #add dataset type here!!!! cifar is 10 so it is ok
     counter = 0
     while model(x_var.clone()).data.max(1, keepdim=True)[1][0].item() == true_label:
         optimizer_s.zero_grad()
@@ -104,7 +105,7 @@ def l1_vals(model,
         for img, name in tqdm(dataloader, desc="val1 for Clean"):
             #cause the batch size is one
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
-            img.to(torch.device('cuda'))
+            img = img.to(torch.device('cuda'))
             view_data_label = int(name[0].split('_')[-1][1])
             predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
@@ -117,7 +118,7 @@ def l1_vals(model,
         count = len(dataloader.dataset)
         for img, name in tqdm(dataloader, desc="val1 for "+attack):
             #cause the batch size is one
-            img.to(torch.device('cuda'))
+            img = img.to(torch.device('cuda'))
             real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
@@ -151,7 +152,7 @@ def targeted_vals(model,
         for img, name in tqdm(dataloader, desc="val2 for Clean"):
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             #cause the batch size is one
-            img.to(torch.device('cuda'))
+            img = img.to(torch.device('cuda'))
             view_data_label = int(name[0].split('_')[-1][1])
             predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
@@ -164,7 +165,7 @@ def targeted_vals(model,
         count = len(dataloader.dataset)
         for img, name in tqdm(dataloader, desc="val2 for "+attack):
             #cause the batch size is one
-            img.to(torch.device('cuda'))
+            img = img.to(torch.device('cuda'))
             real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
@@ -197,7 +198,7 @@ def untargeted_vals(model,
     model.eval()
     if attack == "Clean":
         for img, name in tqdm(dataloader, desc="val3 for Clean"):
-            img.to(torch.device('cuda'))
+            img = img.to(torch.device('cuda'))
             #cause the batch size is one
             view_data_label = int(name[0].split('_')[-1][1])
             predicted_label = model(img).data.max(1, keepdim=True)[1][0]
@@ -210,7 +211,7 @@ def untargeted_vals(model,
     else:
         count = len(dataloader.dataset)
         for img, name in tqdm(dataloader, desc="val3 for "+attack):
-            img.to(torch.device('cuda'))
+            img = img.to(torch.device('cuda'))
             #cause the batch size is one
             real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img).data.max(1, keepdim=True)[1][0]
