@@ -13,10 +13,9 @@ noisy = Noisy.apply
 def l1_detection(model, 
                  img,
                  n_radius):
-    return torch.norm(F.softmax(model(img) - F.softmax(model(noisy(img, n_radius))), 1).item()
+    return torch.norm(F.softmax(model(img)) - F.softmax(model(noisy(img, n_radius))), 1).item()
 
-""" Return the number of steps to cross boundary using targeted attack on [img]. Iteration stops at 
-    [cap] steps """
+""" Return the number of steps to cross boundary using targeted attack on [img]. Iteration stops at [cap] steps """
 def targeted_detection(model, 
                        img,
                        lr, 
@@ -51,8 +50,7 @@ def targeted_detection(model,
             break
     return counter
 
-""" Return the number of steps to cross boundary using untargeted attack on [img]. Iteration stops at 
-    [cap] steps """
+""" Return the number of steps to cross boundary using untargeted attack on [img]. Iteration stops at [cap] steps """
 def untargeted_detection(model, 
                          img, 
                          lr, 
