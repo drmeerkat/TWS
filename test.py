@@ -115,13 +115,13 @@ class AdversarialDataset(Dataset):
 
 if __name__ == "__main__":
     model_names = ['cwnet', 'wrnet', 'vgg11bn']
-    attacks = ['PGD-T', 'CW-T', 'DDN-T', 'PGD-U', 'CW-U', 'DDN-U', 'FGSM', 'DFool', 'Clean']
+    attacks = ['PGD-T', 'CW-T', 'DDN-T', 'PGD-U', 'CW-U', 'DDN-U', 'FGSM', 'DFool']
 
     parser = argparse.ArgumentParser(description='TWS baseline test')
     parser.add_argument("type", choices=['black', 'white'], default="black", help="which type of attack you want to test, black or white")
-    parser.add_argument("dataset", choices=['fmnist', 'cifar10'], default="cifar", help= "[cifar, fmnist] what kind of dataset you want to test")
-    parser.add_argument("data_dir", str, default="", help="datset path")
-    parser.add_argument("model_dir", str, default='', help="path to the model you want to test")
+    parser.add_argument("dataset", choices=['fmnist', 'cifar10'], default="cifar10", help= "[cifar, fmnist] what kind of dataset you want to test")
+    parser.add_argument("data_dir", str, default="../wyf/SubGRED/adversarial_data/", help="datset path")
+    parser.add_argument("model_dir", str, default='../wyf/SubGRED/classifier_pth/', help="path to the model you want to test")
     parser.add_argument("arch", choices=model_names, default='vgg11bn', help="the model arch from which the adversarial examples are generated")
     # parser.add_argument('atk', choices=attacks, required=True, help="the attack you want to test against")
     args = parser.parse_args()
