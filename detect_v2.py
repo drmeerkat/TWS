@@ -106,7 +106,7 @@ def l1_vals(model,
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             img.to(torch.device('cuda'))
             view_data_label = int(name[0].split('_')[-1][1])
-            predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
+            predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
                 continue  # note that only load images that were classified correctly
             val = l1_detection(model, img, n_radius)
@@ -119,7 +119,7 @@ def l1_vals(model,
             #cause the batch size is one
             img.to(torch.device('cuda'))
             real_label = int(name[0].split('_')[-2][1])
-            predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
+            predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
                 count -= 1#number of successful adversary minus 1
                 continue#only load successful adversary
@@ -153,7 +153,7 @@ def targeted_vals(model,
             #cause the batch size is one
             img.to(torch.device('cuda'))
             view_data_label = int(name[0].split('_')[-1][1])
-            predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
+            predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
                 continue  # note that only load images that were classified correctly
             val = targeted_detection(model, img, targeted_lr, t_radius)
@@ -166,7 +166,7 @@ def targeted_vals(model,
             #cause the batch size is one
             img.to(torch.device('cuda'))
             real_label = int(name[0].split('_')[-2][1])
-            predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
+            predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
                 count -= 1#number of successful adversary minus 1
                 continue#only load successful adversary
@@ -200,7 +200,7 @@ def untargeted_vals(model,
             img.to(torch.device('cuda'))
             #cause the batch size is one
             view_data_label = int(name[0].split('_')[-1][1])
-            predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
+            predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
                 continue  # note that only load images that were classified correctly
             val = untargeted_detection(model, img, untargeted_lr, u_radius)
@@ -213,7 +213,7 @@ def untargeted_vals(model,
             img.to(torch.device('cuda'))
             #cause the batch size is one
             real_label = int(name[0].split('_')[-2][1])
-            predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
+            predicted_label = model(img).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
                 count -= 1#number of successful adversary minus 1
                 continue#only load successful adversary

@@ -95,7 +95,7 @@ if __name__ == "__main__":
     else:
         raise Exception("Unknown model type")
 
-    model.to(torch.device('gpu'))
+    model.to(torch.device('cuda'))
     model.eval()
 
     # record the detail of this exp in str?
