@@ -8,7 +8,7 @@ from utils_v2 import Noisy,random_label
 from tqdm import tqdm
 
 noisy = Noisy.apply
-TEST = 1
+TEST = 0
 
 
 """ Return the value of l1 norm of [img] with noise radius [n_radius]"""
@@ -222,5 +222,5 @@ def untargeted_vals(model,
             vals = np.concatenate((vals, [val]))
             if TEST:
                 break
-        print('this is number of success in untargeted detection', cout)
+        print('this is number of success in untargeted detection', count)
     return vals

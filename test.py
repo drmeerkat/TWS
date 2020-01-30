@@ -66,7 +66,7 @@ class AdversarialDataset(Dataset):
 
 if __name__ == "__main__":
     model_names = ['cwnet', 'wrnet', 'vgg11bn']
-    attacks = ['PGD-T', 'CW-T', 'DDN-T', 'PGD-U', 'CW-U', 'DDN-U', 'FGSM', 'DFool' ]
+    attacks = ['PGD-T', 'CW-T', 'DDN-T', 'PGD-U', 'CW-U', 'DDN-U', 'FGSM-U', 'DFool-U' ]
 
     parser = argparse.ArgumentParser(description='TWS baseline test')
     parser.add_argument("--atk", choices=['black', 'white'], default="black", help="which type of attack you want to test, black or white")
@@ -162,7 +162,7 @@ if __name__ == "__main__":
                     #     suitable_pairs.append((p_1[ix_1],p_2[ix_2],p_3[ix_3]))
                     #     tprs.append(tpr[len(p_2)*len(p_3)*ix_1+len(p_3)*ix_2+ix_3])
 
-        print("There are total of %d groups in %s has no data"%(sum(counter == 0)), attacks[i])
+        print("There are total of %d groups in %s has no data"%(sum(counter == 0), attacks[i]))
         counter[counter == 0] += 1 
         results[attacks[i]] = sum(auc_list / counter)*0.005
         tpr[-1] = len(a_target_1[np.logical_or(np.logical_or(a_target_1>=p_1[-1],a_target_2>=p_2[-1]),a_target_3>=p_3[-1])])*1.0/len(a_target_1)
