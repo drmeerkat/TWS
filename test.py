@@ -22,8 +22,7 @@ def load_GPUS(model, model_path, **kwargs):
     return model
 
 def build_adversarial_loader(savedpath, batch_size=1, train=False, num_workers=8, showname=False):
-    transform = transforms.Compose([transforms.ToTensor()])
-    dataset = AdversarialDataset(savedpath, train=train, transform=transform, showname=showname)
+    dataset = AdversarialDataset(savedpath, train=train, transform=None, showname=showname)
 
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=train, num_workers=num_workers)
     return loader
@@ -45,10 +44,10 @@ class AdversarialDataset(Dataset):
         file_path = os.path.join(self.data_root, self.imagenames[idx])
         data = torch.load(file_path)
 
-        if not self.print_:
-            print('data size is {}; {} length is {}.'. \
-                  format(data.size(), 'training set' if self.istrain else 'testing set', self.length))
-            self.print_ = True
+        # if self.print_:
+        #     print('data size is {}; {} length is {}.'. \
+        #           format(data.size(), 'training set' if self.istrain else 'testing set', self.length))
+        #     # self.print_ = True
         
         if self.transform:
             data = self.transform(data)
@@ -71,8 +70,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='TWS baseline test')
     parser.add_argument("--atk", choices=['black', 'white'], default="black", help="which type of attack you want to test, black or white")
     parser.add_argument("--dataset", choices=['fmnist', 'cifar10'], default="cifar10", help= "[cifar, fmnist] what kind of dataset you want to test")
-    parser.add_argument("--data_dir", type=str, default="~/wyf/SubGRED/adversarial_data/", help="datset path")
-    parser.add_argument("--model_dir", type=str, default='~/wyf/SubGRED/classifier_pth/', help="path to the model you want to test")
+    parser.add_argument("--data_dir", type=str, default="../wyf/SubGRED/adversarial_data/", help="datset path")
+    parser.add_argument("--model_dir", type=str, default='../wyf/SubGRED/classifier_pth/', help="path to the model you want to test")
     parser.add_argument("--arch", choices=model_names, default='vgg11bn', help="the model arch from which the adversarial examples are generated")
     # parser.add_argument('atk', choices=attacks, required=True, help="the attack you want to test against")
     args = parser.parse_args()
