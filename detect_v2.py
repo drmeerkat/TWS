@@ -100,8 +100,9 @@ def l1_vals(model,
     model.eval()
     if attack == "Clean":
         for img, name in dataloader:
+            #cause the batch size is one
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
-            view_data_label = int(name.split('_')[-1][1])
+            view_data_label = int(name[0].split('_')[-1][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
                 continue  # note that only load images that were classified correctly
@@ -110,7 +111,8 @@ def l1_vals(model,
     else:
         count = len(dataloader.dataset)
         for img, name in dataloader:
-            real_label = int(name.split('_')[-2][1])
+            #cause the batch size is one
+            real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
                 count -= 1#number of successful adversary minus 1
@@ -140,7 +142,8 @@ def targeted_vals(model,
     if attack == "Clean":
         for img, name in dataloader:
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
-            view_data_label = int(name.split('_')[-1][1])
+            #cause the batch size is one
+            view_data_label = int(name[0].split('_')[-1][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
                 continue  # note that only load images that were classified correctly
@@ -149,7 +152,8 @@ def targeted_vals(model,
     else:
         count = len(dataloader.dataset)
         for img, name in dataloader:
-            real_label = int(name.split('_')[-2][1])
+            #cause the batch size is one
+            real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
                 count -= 1#number of successful adversary minus 1
@@ -180,7 +184,8 @@ def untargeted_vals(model,
     if attack == "Clean":
         for img, name in dataloader:
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
-            view_data_label = int(name.split('_')[-1][1])
+            #cause the batch size is one
+            view_data_label = int(name[0].split('_')[-1][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
             if predicted_label != view_data_label:
                 continue  # note that only load images that were classified correctly
@@ -189,7 +194,8 @@ def untargeted_vals(model,
     else:
         count = len(dataloader.dataset)
         for img, name in dataloader:
-            real_label = int(name.split('_')[-2][1])
+            #cause the batch size is one
+            real_label = int(name[0].split('_')[-2][1])
             predicted_label = model(img.clone()).data.max(1, keepdim=True)[1][0]
             if real_label == predicted_label:
                 count -= 1#number of successful adversary minus 1
