@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 noisy = Noisy.apply
 TEST = 0
+MAX_CNT = 500
 
 
 """ Return the value of l1 norm of [img] with noise radius [n_radius]"""
@@ -101,8 +102,10 @@ def l1_vals(model,
             n_radius):
     vals = np.zeros(0)
     model.eval()
+    limit_counter = 0
     if attack == "Clean":
         for img, name in tqdm(dataloader, desc="val1 for Clean"):
+            limit_counter += 1
             #cause the batch size is one
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             img = img.to(torch.device('cuda'))
@@ -112,11 +115,12 @@ def l1_vals(model,
                 continue  # note that only load images that were classified correctly
             val = l1_detection(model, img, n_radius)
             vals = np.concatenate((vals, [val]))
-            if TEST:
+            if TEST or limit_counter == MAX_CNT:
                 break
     else:
         count = len(dataloader.dataset)
         for img, name in tqdm(dataloader, desc="val1 for "+attack):
+            limit_counter += 1
             #cause the batch size is one
             img = img.to(torch.device('cuda'))
             real_label = int(name[0].split('_')[-2][1])
@@ -126,7 +130,7 @@ def l1_vals(model,
                 continue#only load successful adversary
             val = l1_detection(model, img, n_radius)
             vals = np.concatenate((vals, [val]))
-            if TEST:
+            if TEST or limit_counter == MAX_CNT:
                 break
         print('this is number of success in l1 detection', count)
     return vals
@@ -148,8 +152,10 @@ def targeted_vals(model,
                   t_radius):
     vals = np.zeros(0)
     model.eval()
+    limit_counter = 0
     if attack == "Clean":
         for img, name in tqdm(dataloader, desc="val2 for Clean"):
+            limit_counter += 1
             #if you are using own data, uncomment following lines to make sure only detect images which are correctly classified
             #cause the batch size is one
             img = img.to(torch.device('cuda'))
@@ -159,11 +165,12 @@ def targeted_vals(model,
                 continue  # note that only load images that were classified correctly
             val = targeted_detection(model, img, targeted_lr, t_radius)
             vals = np.concatenate((vals, [val]))
-            if TEST:
+            if TEST or limit_counter == MAX_CNT:
                 break            
     else:
         count = len(dataloader.dataset)
         for img, name in tqdm(dataloader, desc="val2 for "+attack):
+            limit_counter += 1
             #cause the batch size is one
             img = img.to(torch.device('cuda'))
             real_label = int(name[0].split('_')[-2][1])
@@ -173,7 +180,7 @@ def targeted_vals(model,
                 continue#only load successful adversary
             val = targeted_detection(model, img, targeted_lr, t_radius)
             vals = np.concatenate((vals, [val]))
-            if TEST:
+            if TEST or limit_counter == MAX_CNT:
                 break
         print('this is number of success in targeted detection', count)
     return vals
@@ -196,8 +203,10 @@ def untargeted_vals(model,
                     u_radius):
     vals = np.zeros(0)
     model.eval()
+    limit_counter = 0
     if attack == "Clean":
         for img, name in tqdm(dataloader, desc="val3 for Clean"):
+            limit_counter += 1
             img = img.to(torch.device('cuda'))
             #cause the batch size is one
             view_data_label = int(name[0].split('_')[-1][1])
@@ -206,11 +215,12 @@ def untargeted_vals(model,
                 continue  # note that only load images that were classified correctly
             val = untargeted_detection(model, img, untargeted_lr, u_radius)
             vals = np.concatenate((vals, [val]))
-            if TEST:
+            if TEST or limit_counter == MAX_CNT:
                 break
     else:
         count = len(dataloader.dataset)
         for img, name in tqdm(dataloader, desc="val3 for "+attack):
+            limit_counter += 1
             img = img.to(torch.device('cuda'))
             #cause the batch size is one
             real_label = int(name[0].split('_')[-2][1])
@@ -220,7 +230,7 @@ def untargeted_vals(model,
                 continue#only load successful adversary
             val = untargeted_detection(model, img, untargeted_lr, u_radius)
             vals = np.concatenate((vals, [val]))
-            if TEST:
+            if TEST or limit_counter == MAX_CNT:
                 break
         print('this is number of success in untargeted detection', count)
     return vals
